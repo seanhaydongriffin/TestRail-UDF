@@ -190,8 +190,6 @@ Func _TestRailAuth()
 	Local $iPID = Run('curl.exe -k -u ' & $testrail_username & ':' & $testrail_password & ' ' & $testrail_domain & '/index.php?/auth/login -c cookies.txt -d "name=' & $testrail_username & '&password=' & $testrail_password & '&rememberme=1" -X POST', @ScriptDir, @SW_HIDE, $STDOUT_CHILD)
     ProcessWaitClose($iPID)
     $testrail_json = StdoutRead($iPID)
-	;ConsoleWrite('@@ Debug(' & @ScriptLineNumber & ') : $testrail_json = ' & $testrail_json & @CRLF & '>Error code: ' & @error & @CRLF) ;### Debug Console
-;Exit
 EndFunc
 
 
@@ -474,11 +472,8 @@ Func _TestRailGetResultsIdStatusIdDefects($test_id)
 	ConsoleWrite('@@ Debug(' & @ScriptLineNumber & ') : $testrail_json = ' & $testrail_json & @CRLF & '>Error code: ' & @error & @CRLF) ;### Debug Console
 	filedelete("D:\dwn\fred.txt")
 	filewrite("D:\dwn\fred.txt", $testrail_json)
-;	Exit
 
 	$rr = StringRegExp($testrail_json, '(?U)"id":(.*),.*"test_id":(.*),.*"status_id":(.*),.*"defects":(.*),"custom_step_results"', 3)
-;	_ArrayDisplay($rr)
-;	Exit
 	Return $rr
 
 
@@ -496,11 +491,8 @@ Func _TestRailGetResultsForRunIdStatusIdCreatedOnDefects($run_id)
 	ConsoleWrite('@@ Debug(' & @ScriptLineNumber & ') : $testrail_json = ' & $testrail_json & @CRLF & '>Error code: ' & @error & @CRLF) ;### Debug Console
 ;	filedelete("D:\dwn\fred.txt")
 ;	filewrite("D:\dwn\fred.txt", $testrail_json)
-;	Exit
 
 	$rr = StringRegExp($testrail_json, '(?U)"id":(.*),.*"test_id":(.*),.*"status_id":(.*),.*"created_on":(.*),.*"defects":(.*),"custom_step_results"', 3)
-;	_ArrayDisplay($rr)
-;	Exit
 	Return $rr
 
 
@@ -544,7 +536,6 @@ Func _TestRailGetTestsIdTitleCaseIdRunId($run_id)
     $testrail_json = StdoutRead($iPID)
 	ConsoleWrite('@@ Debug(' & @ScriptLineNumber & ') : $testrail_json = ' & $testrail_json & @CRLF & '>Error code: ' & @error & @CRLF) ;### Debug Console
 ;	filewrite("D:\dwn\fred.txt", $testrail_json)
-;	Exit
 
 	$rr = StringRegExp($testrail_json, '(?U)"id":(.*),.*"case_id":(.*),.*"run_id":(.*),.*"title":"(.*)",', 3)
 	Return $rr
@@ -616,14 +607,9 @@ EndFunc
 
 Func _TestRailGetPlans($project_id)
 
-;	$response = cURL_easy($testrail_domain & "/index.php?/api/v2/get_plans/" & $project_id, "", 0, 0, "", "Content-Type: application/json", "", 0, 1, 0, $testrail_username & ":" & $testrail_password)
-;	$testrail_json = $response[2]
-
 	Local $iPID = Run('curl.exe -k -H "Content-Type: application/json" -u ' & $testrail_username & ':' & $testrail_password & ' ' & $testrail_domain & '/index.php?/api/v2/get_plans/' & $project_id, @ScriptDir, @SW_HIDE, $STDOUT_CHILD)
     ProcessWaitClose($iPID)
     $testrail_json = StdoutRead($iPID)
-;	ConsoleWrite('@@ Debug(' & @ScriptLineNumber & ') : $testrail_json = ' & $testrail_json & @CRLF & '>Error code: ' & @error & @CRLF) ;### Debug Console
-
 
 EndFunc
 
@@ -752,6 +738,8 @@ Func _TestRailGetCreatedOnTestSavedRuntimeForRuns($project_id, $run_suite, $crea
 								$complexity = Json_Get($cases_decoded_json, '.cases[' & $l & '].custom_complexity')
 								Local $manual_vs_automated_multiplier = $testcase_complexity_execution_weightage_dict.Item($complexity)
 								$saved_runtime = int((($elapsed_seconds * Number($manual_vs_automated_multiplier)) - $elapsed_seconds) / 60)
+								ConsoleWrite('@@ Debug(' & @ScriptLineNumber & ') : $manual_vs_automated_multiplier = ' & $manual_vs_automated_multiplier & @CRLF & '>Error code: ' & @error & @CRLF) ;### Debug Console
+								ConsoleWrite('@@ Debug(' & @ScriptLineNumber & ') : $elapsed_seconds = ' & $elapsed_seconds & @CRLF & '>Error code: ' & @error & @CRLF) ;### Debug Console
 								ExitLoop 2
 							EndIf
 						Next
@@ -1054,11 +1042,12 @@ Func _TestRailAuthenticationWithToast($app_name, $domain, $ini_filename)
 
 		$testrail_decrypted_password = _Crypt_DecryptData($testrail_encrypted_password, @ComputerName & @UserName, $CALG_AES_256)
 		$testrail_decrypted_password = BinaryToString($testrail_decrypted_password)
+		ConsoleWrite('@@ Debug(' & @ScriptLineNumber & ') : $testrail_decrypted_password = ' & $testrail_decrypted_password & @CRLF & '>Error code: ' & @error & @CRLF) ;### Debug Console
 	EndIf
 
 	if stringlen($testrail_decrypted_password) > 0 Then
 
-;		_TestRailLogin($username, $testrail_decrypted_password)
+		_TestRailLogin($testrail_username, $testrail_decrypted_password)
 		_TestRailAuth()
 	EndIf
 
